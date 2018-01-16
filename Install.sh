@@ -38,6 +38,7 @@ cat jcameron-key.asc | apt-key add -;rm jcameron-key.asc
 
 # Update
 apt-get update
+apt-get update && apt-get -y install mysql-server
 
 # Install Webserver
 apt-get -y install nginx
