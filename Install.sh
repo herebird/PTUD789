@@ -90,7 +90,7 @@ http {
 }
 END3
 mkdir -p /home/vps/public_html
-echo "<pre>Source by Mnm Ami | Donate at TrueMoney Wallet 082-038-2600</pre>" > /home/vps/public_html/index.html
+echo "<pre>Source by www.เฮียเบิร์ด.com | Donate at TrueMoney Wallet 097-026-7262</pre>" > /home/vps/public_html/index.html
 echo "<?phpinfo(); ?>" > /home/vps/public_html/info.php
 args='$args'
 uri='$uri'
@@ -295,6 +295,6 @@ echo ""
 echo "====================================================="
 echo "หลังจากติดตั้งสำเร็จ... กรุณาพิมพ์คำสั่ง menu เพื่อไปยังขั้นตอนถัดไป"
 echo "====================================================="
-echo "-------- Script by Mnm Ami"
+echo "-------- Script by www.เฮียเบิร์ด.com"
 cd
 rm -f /root/Install.sh
