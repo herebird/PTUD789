@@ -1,48 +1,51 @@
 #!/bin/bash
 
-# Initialization var
+# Go to root
+cd
+
+#ca-certificates
+apt-get install ca-certificates
+
+# initialisasi var
 export DEBIAN_FRONTEND=noninteractive
 OS=`uname -m`;
 MYIP=$(wget -qO- ipv4.icanhazip.com);
 MYIP2="s/xxxxxxxxx/$MYIP/g";
+MYPORT="s/85/99/g";
 
-# Go to root
-cd
+#FIGlet In Linux
+sudo apt-get install figlet
+yum install figlet
 
-# Disable ipv6
+
+# disable ipv6
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.local
 
-# Install wget and curl
+# install wget and curl
 apt-get update;apt-get -y install wget curl;
 
 # Set Location GMT +7
-ln -fs /usr/share/zoneinfo/Asia/Thailand /etc/localtime
+ln -fs /usr/share/zoneinfo/Asia/Bangkok /etc/localtime
 
-# Set Locale
+# set locale
 sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
 service ssh restart
 
-# Set repo
-cat > /etc/apt/sources.list <<END
-deb http://cdn.debian.net/debian wheezy main contrib non-free
-deb http://security.debian.org/ wheezy/updates main contrib non-free
-deb http://packages.dotdeb.org wheezy all
-deb http://download.webmin.com/download/repository sarge contrib
-deb http://webmin.mirror.somersettechsolutions.co.uk/repository sarge contrib
-END
-wget "https://raw.githubusercontent.com/nwqionnwkn/OPENEXTRA/master/Config/dotdeb.gpg"
-wget "https://raw.githubusercontent.com/nwqionnwkn/OPENEXTRA/master/Config/jcameron-key.asc"
+# set repo
+wget -O /etc/apt/sources.list "https://raw.githubusercontent.com/oi10536/SSH-OpenVPN/master/API/sources.list.debian7"
+wget "https://raw.githubusercontent.com/oi10536/SSH-OpenVPN/master/API/dotdeb.gpg"
+wget "https://raw.githubusercontent.com/oi10536/SSH-OpenVPN/master/API/jcameron-key.asc"
 cat dotdeb.gpg | apt-key add -;rm dotdeb.gpg
 cat jcameron-key.asc | apt-key add -;rm jcameron-key.asc
 
 # Update
 apt-get update
 
-# Install Webserver
+# install webserver
 apt-get -y install nginx
 
-# Install Essential Package
+# install essential package
 apt-get -y install nano iptables dnsutils openvpn screen whois ngrep unzip unrar
 
 # Install Screenfetch
@@ -52,70 +55,21 @@ chmod +x /usr/bin/screenfetch
 echo "clear" >> .profile
 echo "screenfetch" >> .profile
 
-# Install Webserver
+# install webserver
 cd
+apt-get -y install nginx php5 php5-fpm php5-cli php5-mysql php5-mcrypt
 rm /etc/nginx/sites-enabled/default
 rm /etc/nginx/sites-available/default
-cat > /etc/nginx/nginx.conf <<END3
-user www-data;
-worker_processes 1;
-pid /var/run/nginx.pid;
-events {
-	multi_accept on;
-  worker_connections 1024;
-}
-http {
-	gzip on;
-	gzip_vary on;
-	gzip_comp_level 5;
-	gzip_types    text/plain application/x-javascript text/xml text/css;
-	autoindex on;
-  sendfile on;
-  tcp_nopush on;
-  tcp_nodelay on;
-  keepalive_timeout 65;
-  types_hash_max_size 2048;
-  server_tokens off;
-  include /etc/nginx/mime.types;
-  default_type application/octet-stream;
-  access_log /var/log/nginx/access.log;
-  error_log /var/log/nginx/error.log;
-  client_max_body_size 32M;
-	client_header_buffer_size 8m;
-	large_client_header_buffers 8 8m;
-	fastcgi_buffer_size 8m;
-	fastcgi_buffers 8 8m;
-	fastcgi_read_timeout 600;
-  include /etc/nginx/conf.d/*.conf;
-}
-END3
+wget -O /etc/nginx/nginx.conf "https://raw.githubusercontent.com/oi10536/SSH-OpenVPN/master/API/nginx.conf"
 mkdir -p /home/vps/public_html
-echo "<pre>Source by www.เฮียเบิร์ด.com | Donate at TrueMoney Wallet 097-026-7262</pre>" > /home/vps/public_html/index.html
-echo "<?phpinfo(); ?>" > /home/vps/public_html/info.php
-args='$args'
-uri='$uri'
-document_root='$document_root'
-fastcgi_script_name='$fastcgi_script_name'
-cat > /etc/nginx/conf.d/vps.conf <<END4
-server {
-  listen       85;
-  server_name  127.0.0.1 localhost;
-  access_log /var/log/nginx/vps-access.log;
-  error_log /var/log/nginx/vps-error.log error;
-  root   /home/vps/public_html;
-  location / {
-    index  index.html index.htm index.php;
-    try_files $uri $uri/ /index.php?$args;
-  }
-  location ~ \.php$ {
-    include /etc/nginx/fastcgi_params;
-    fastcgi_pass  127.0.0.1:9000;
-    fastcgi_index index.php;
-    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-  }
-}
-END4
-/etc/init.d/nginx restart
+wget -O /etc/nginx/conf.d/vps.conf "https://raw.githubusercontent.com/oi10536/SSH-OpenVPN/master/API/vps.conf"
+sed -i 's/cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php5/fpm/php.ini
+sed -i 's/listen = \/var\/run\/php5-fpm.sock/listen = 127.0.0.1:9000/g' /etc/php5/fpm/pool.d/www.conf
+sed -i $MYPORT /etc/nginx/conf.d/vps.conf;
+useradd -m vps && mkdir -p /home/vps/public_html
+rm /home/vps/public_html/index.html && echo "<?php phpinfo() ?>" > /home/vps/public_html/info.php
+chown -R www-data:www-data /home/vps/public_html && chmod -R g+rw /home/vps/public_html
+service php5-fpm restart && service nginx restart
 
 # Install Vnstat
 apt-get -y install vnstat
@@ -219,6 +173,14 @@ visible_hostname openextra.net
 END
 sed -i $MYIP2 /etc/squid3/squid.conf;
 
+# install webmin
+cd
+wget -O webmin-current.deb "https://raw.githubusercontent.com/oi10536/SSH-OpenVPN/master/API/webmin-current.deb"
+dpkg -i --force-all webmin-current.deb;
+apt-get -y -f install;
+rm /root/webmin-current.deb
+service webmin restart
+
 # Install Script
 echo -e "\033[1;35m"
 # download script
@@ -271,17 +233,41 @@ echo -e "\033[1;36m "
 echo ""
 echo "..... Installing 98% ...restarting service."
 
-# Finishing
+# finishing
 cd
 chown -R www-data:www-data /home/vps/public_html
-/etc/init.d/nginx restart
+service nginx start
 service openvpn restart
 service cron restart
-/etc/init.d/ssh restart
-/etc/init.d/dropbear restart
-service vnstat restart
+service ssh restart
+service dropbear restart
 service squid3 restart
+service webmin restart
 rm -rf ~/.bash_history && history -c
+echo "unset HISTFILE" >> /etc/profile
+
+# install myweb
+cd /home/vps/public_html/
+wget -O /home/vps/public_html/myweb.tar "https://raw.githubusercontent.com/oi10536/SSH-OpenVPN/master/API/myweb.tar"
+cd /home/vps/public_html/
+tar xf myweb.tar
+
+# Setting web
+echo -e "\033[01;31mIP User And Pass 'ROOT' Only \033[0m"
+read -p "IP : " MyIPD
+read -p "Username : " Login
+read -p "Password : " Passwd
+MYIPS="s/xxxxxxxxx/$MyIPD/g";
+US1="s/thaivpnuser/$Login/g";
+PS2="s/thaivpnpass/$Passwd/g";
+sed -i $MYIPS /home/vps/public_html/index.php;
+sed -i $US1 /home/vps/public_html/index.php;
+sed -i $PS2 /home/vps/public_html/index.php;
+
+#RM file
+rm -f myweb.tar
+cd
+rm -f Install.sh
 
 # info
 clear
