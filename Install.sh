@@ -17,6 +17,9 @@ MYPORT="s/85/99/g";
 sudo apt-get install figlet
 yum install figlet
 
+# update apt-file
+apt-file update
+
 
 # disable ipv6
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
