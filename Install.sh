@@ -175,11 +175,14 @@ sed -i $MYIP2 /etc/squid3/squid.conf;
 
 # install webmin
 cd
-wget -O webmin-current.deb "https://raw.githubusercontent.com/oi10536/SSH-OpenVPN/master/API/webmin-current.deb"
-dpkg -i --force-all webmin-current.deb;
-apt-get -y -f install;
-rm /root/webmin-current.deb
-service webmin restart
+apt-get update
+apt-get upgrade
+deb http://download.webmin.com/download/repository sarge contrib
+deb http://webmin.mirror.somersettechsolutions.co.uk/repository sarge contrib
+sudo wget http://www.webmin.com/jcameron-key.asc
+sudo apt-key add jcameron-key.asc
+apt-get update
+apt-get install webmin -y
 
 # Install Script
 echo -e "\033[1;35m"
