@@ -189,49 +189,82 @@ apt-get install webmin -y
 
 # Install Script
 echo -e "\033[1;35m"
-# download script
-cd /usr/bin
-wget -O menu "https://raw.githubusercontent.com/lnwshop/z/master/menu.sh"
-wget -O 1 "https://raw.githubusercontent.com/lnwshop/z/master/adduser.sh"
-wget -O 2 "https://raw.githubusercontent.com/lnwshop/z/master/testuser.sh"
-wget -O 3 "https://raw.githubusercontent.com/lnwshop/z/master/rename.sh"
-wget -O 4 "https://raw.githubusercontent.com/lnwshop/z/master/repass.sh"
-wget -O 5 "https://raw.githubusercontent.com/lnwshop/z/master/delet.sh"
-wget -O 6 "https://raw.githubusercontent.com/lnwshop/z/master/deletuserxp.sh"
-wget -O 7 "https://raw.githubusercontent.com/lnwshop/z/master/viewuser.sh"
-wget -O 8 "https://raw.githubusercontent.com/lnwshop/z/master/restart.sh"
-wget -O 9 "https://raw.githubusercontent.com/lnwshop/z/master/speedtest.py"
-wget -O 10 "https://raw.githubusercontent.com/lnwshop/z/master/online.sh"
-wget -O 11 "https://raw.githubusercontent.com/lnwshop/z/master/viewlogin.sh"
-wget -O 12 "https://raw.githubusercontent.com/lnwshop/z/master/aboutsystem.sh"
-wget -O 13 "https://raw.githubusercontent.com/lnwshop/z/master/lock.sh"
-wget -O 14 "https://raw.githubusercontent.com/lnwshop/z/master/unlock.sh"
-wget -O 15 "https://raw.githubusercontent.com/lnwshop/z/master/httpinstall.sh"
-wget -O 16 "https://raw.githubusercontent.com/lnwshop/z/master/httpcredit.sh"
-wget -O 17 "https://raw.githubusercontent.com/lnwshop/z/master/aboutscrip.sh"
-wget -O 18 "https://raw.githubusercontent.com/lnwshop/z/master/TimeReboot.sh"
+# Download Script
+cd
+sed -i '$ i\screen -AmdS limit /root/limit.sh' /etc/rc.local
+sed -i '$ i\screen -AmdS ban /root/ban.sh' /etc/rc.local
+sed -i '$ i\screen -AmdS limit /root/limit.sh' /etc/rc.d/rc.local
+sed -i '$ i\screen -AmdS ban /root/ban.sh' /etc/rc.d/rc.local
+echo "0 0 * * * root /usr/local/bin/user-expire" > /etc/cron.d/user-expire
+echo "0 0 * * * root /usr/local/bin/user-expire-pptp" > /etc/cron.d/user-expire-pptp
+
+cat > /root/ban.sh <<END3
+#!/bin/bash
+#/usr/local/bin/user-ban
+END3
+
+cat > /root/limit.sh <<END3
+#!/bin/bash
+#/usr/local/bin/user-limit
+END3
+
+cd /usr/local/bin
+wget -O premium-script.tar.gz "https://github.com/lnwshop/vips/blob/master/premium-script.tar.gz"
+tar -xvf premium-script.tar.gz
+rm -f premium-script.tar.gz
+
+cp /usr/local/bin/premium-script /usr/local/bin/menu
+
+chmod +x /usr/local/bin/trial
+chmod +x /usr/local/bin/user-add
+chmod +x /usr/local/bin/user-aktif
+chmod +x /usr/local/bin/user-ban
+chmod +x /usr/local/bin/user-delete
+chmod +x /usr/local/bin/user-detail
+chmod +x /usr/local/bin/user-expire
+chmod +x /usr/local/bin/user-limit
+chmod +x /usr/local/bin/user-lock
+chmod +x /usr/local/bin/user-login
+chmod +x /usr/local/bin/user-unban
+chmod +x /usr/local/bin/user-unlock
+chmod +x /usr/local/bin/user-password
+chmod +x /usr/local/bin/user-log
+chmod +x /usr/local/bin/user-add-pptp
+chmod +x /usr/local/bin/user-delete-pptp
+chmod +x /usr/local/bin/alluser-pptp
+chmod +x /usr/local/bin/user-login-pptp
+chmod +x /usr/local/bin/user-expire-pptp
+chmod +x /usr/local/bin/user-detail-pptp
+chmod +x /usr/local/bin/bench-network
+chmod +x /usr/local/bin/speedtest
+chmod +x /usr/local/bin/ram
+chmod +x /usr/local/bin/log-limit
+chmod +x /usr/local/bin/log-ban
+chmod +x /usr/local/bin/user-generate
+chmod +x /usr/local/bin/user-list
+chmod +x /usr/local/bin/diagnosa
+chmod +x /usr/local/bin/premium-script
+chmod +x /usr/local/bin/user-delete-expired
+chmod +x /usr/local/bin/auto-reboot
+chmod +x /usr/local/bin/log-install
+chmod +x /usr/local/bin/menu
+chmod +x /usr/local/bin/user-auto-limit
+chmod +x /usr/local/bin/user-auto-limit-script
+chmod +x /usr/local/bin/edit-port
+chmod +x /usr/local/bin/edit-port-squid
+chmod +x /usr/local/bin/edit-port-openvpn
+chmod +x /usr/local/bin/edit-port-openssh
+chmod +x /usr/local/bin/edit-port-dropbear
+chmod +x /usr/local/bin/autokill
+chmod +x /root/limit.sh
+chmod +x /root/ban.sh
+screen -AmdS limit /root/limit.sh
+screen -AmdS ban /root/ban.sh
+clear
+cd
+echo "สคริปต์พรีเมี่ยมได้รับการอัพเกรดเรียบร้อยแล้ว!"
 
 echo "30 3 * * * root /sbin/reboot" > /etc/cron.d/reboot
-
-chmod +x menu
-chmod +x 1
-chmod +x 2
-chmod +x 3
-chmod +x 4
-chmod +x 5
-chmod +x 6
-chmod +x 7
-chmod +x 8
-chmod +x 9
-chmod +x 10
-chmod +x 11
-chmod +x 12
-chmod +x 13
-chmod +x 14
-chmod +x 15
-chmod +x 16
-chmod +x 17
-chmod +x 18
 
 echo -e "\033[1;36m "
 # finishing
